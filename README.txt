@@ -1,0 +1,1 @@
+These are some of the different attempts I made at visualising Covid-19 data across a range of countries and parameters.

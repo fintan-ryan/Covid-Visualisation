@@ -1,0 +1,167 @@
+---
+title: "Irl vs UK (Covid-19)"
+author: "Fintan Ryan"
+date: "5/20/2020"
+output: html_document
+---
+Set Up
+```{r}
+library(ggplot2)
+```
+
+Reading in our covid dataset
+```{r}
+url <- 'https://covid.ourworldindata.org/data/owid-covid-data.csv'
+download.file(url, destfile = 'Coronavirus.csv')
+df <- read.csv('Coronavirus.csv')
+```
+
+
+```{r setup, echo=FALSE}
+# Creating dfs for both Irish and British Daily new Cases
+
+irlnc <- data.frame(df$date[df$location=='Ireland'],
+                  df$new_cases[df$location=='Ireland'])
+
+
+uknc <- data.frame(df$date[df$location=='United Kingdom'],
+                         df$new_cases[df$location=='United Kingdom'])
+
+# Naming the columns in our new dataframes
+names(irlnc) <- c('date','new cases')
+names(uknc) <- c('date','new cases')
+
+# Merging our two new dataframes
+merged_nc <- merge(irlnc,uknc,by='date')
+names(merged_nc) <- c('date','Irl','UK')
+
+# Melting our dataframe
+melted_nc <- reshape2::melt(merged_nc,id.var='date')
+
+
+# Plotting the daily new cases (per million) in both Ireland and the UK
+IUKNC <- ggplot(melted_nc, aes(x=as.Date(date),y=value, col=variable))+
+  geom_point()+
+  geom_line() +
+  labs(x='Date',
+       y='Daily New Cases')+
+  ggtitle('Daily New Cases Ireland vs UK')
+
+colouredNC <- IUKNC +
+  scale_color_manual(values=c('#a24ab6','#f3558f'))
+
+#colouredNC
+```
+
+```{r,echo=FALSE}
+# New Cases Per million
+irlncpm <- data.frame(df$date[df$location=='Ireland'],
+                  df$new_cases_per_million[df$location=='Ireland'])
+
+
+ukncpm <- data.frame(df$date[df$location=='United Kingdom'],
+                         df$new_cases_per_million[df$location=='United Kingdom'])
+
+# Naming the columns in our new dataframes
+names(irlncpm) <- c('date','new cases')
+names(ukncpm) <- c('date','new cases')
+
+# Merging our two new dataframes
+merged_ncpm <- merge(irlncpm,ukncpm,by='date')
+names(merged_ncpm) <- c('date','Irl','UK')
+
+# Melting our dataframe
+melted_ncpm <- reshape2::melt(merged_ncpm,id.var='date')
+
+
+# Plotting the daily new cases (per million) in both Ireland and the UK
+IUKNCPM <- ggplot(melted_ncpm, aes(x=as.Date(date),y=value, col=variable))+
+  geom_point()+
+  geom_line() +
+  labs(x='Date',
+       y='Daily New Cases (per million)')+
+  ggtitle('Daily New Cases (per million) Ireland vs UK')
+
+colouredNCPM <- IUKNCPM +
+  scale_color_manual(values=c('#a24ab6','#f3558f'))
+
+# colouredNCPM
+```
+
+```{r, echo=FALSE}
+# New Deaths 
+irlnd <- data.frame(df$date[df$location=='Ireland'],
+                  df$new_deaths[df$location=='Ireland'])
+
+
+uknd <- data.frame(df$date[df$location=='United Kingdom'],
+                 df$new_deaths[df$location=='United Kingdom'])
+
+# Naming the columns in our new dataframes
+names(irlnd) <- c('date','new deaths')
+names(uknd) <- c('date','new deaths')
+
+# Merging our two new dataframes
+merged_nd <- merge(irlnd,uknd,by='date')
+names(merged_nd) <- c('date','Irl','UK')
+
+# Melting our dataframe
+melted_nd <- reshape2::melt(merged_nd,id.var='date')
+
+
+# Plotting the daily new cases (per million) in both Ireland and the UK
+IUKND <- ggplot(melted_nd, aes(x=as.Date(date),y=value, col=variable))+
+  geom_point()+
+  geom_line() +
+  labs(x='Date',
+       y='Daily New Deaths')+
+  ggtitle('Daily New Deaths Ireland vs UK')
+
+colouredND <- IUKND +
+  scale_color_manual(values=c('#a24ab6','#f3558f'))
+
+# colouredND
+```
+
+```{r, echo=FALSE}
+# Deaths Per million
+irldpm <- data.frame(df$date[df$location=='Ireland'],
+                  df$new_deaths_per_million[df$location=='Ireland'])
+
+
+ukdpm <- data.frame(df$date[df$location=='United Kingdom'],
+                 df$new_deaths_per_million[df$location=='United Kingdom'])
+
+# Naming the columns in our new dataframes
+names(irldpm) <- c('date','new deaths')
+names(ukdpm) <- c('date','new deaths')
+
+# Merging our two new dataframes
+merged_dpm <- merge(irldpm,ukdpm,by='date')
+names(merged_dpm) <- c('date','Irl','UK')
+
+# Melting our dataframe
+melted_dpm <- reshape2::melt(merged_dpm,id.var='date')
+
+
+# Plotting the daily new cases (per million) in both Ireland and the UK
+IUKDPM <- ggplot(melted_dpm, aes(x=as.Date(date),y=value, col=variable))+
+  geom_point()+
+  geom_line() +
+  labs(x='Date',
+       y='Daily New Deaths (per million)')+
+  ggtitle('Daily New Deaths (per million) Ireland vs UK')
+
+colouredDPM <- IUKDPM +
+  scale_color_manual(values=c('#a24ab6','#f3558f'))
+
+# colouredDPM
+```
+
+```{r, echo=FALSE}
+par(mfrow=c(2,2))
+colouredNC
+colouredNCPM
+colouredND
+colouredDPM
+```
